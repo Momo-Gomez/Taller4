@@ -9,6 +9,14 @@ public class Cliente {
     private ListaPaquetes paquetesRecibidos;
     private ListaPaquetes paquetesEnviados;
 
+    public Cliente(String rut, String nombre, String apellido) {
+        this.rut=rut;
+        this.nombre=nombre;
+        this.apellido=apellido;
+        paquetesRecibidos= new ListaPaquetes();
+        paquetesRecibidos= new ListaPaquetes();
+    }
+
     public String getRut() {
         return this.rut;
     }
@@ -36,5 +44,5 @@ public class Cliente {
     public void setPaquetesEnviados(ListaPaquetes paquetesEnviados) {
         this.paquetesEnviados = paquetesEnviados;
     }
-    
+
 }

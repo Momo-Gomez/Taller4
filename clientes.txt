@@ -1,0 +1,4 @@
+9.999.999-9,Javier,Pizarro,Ovalle
+18.881.842-0,Miguel,Gomez,Monte Patria
+23.510.971-9,Camila,Oñate,La Serena
+32.365.643-5,NO, Existo,Calama

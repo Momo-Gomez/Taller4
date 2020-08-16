@@ -7,8 +7,8 @@ public class NodoPaquete {
 
     public NodoPaquete(Paquete paquete) {
         this.paquete = paquete;
-        next=null;
-        previo=null;
+        next = null;
+        previo = null;
     }
 
     public Paquete getPaquete() {
