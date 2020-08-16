@@ -85,11 +85,12 @@ public class AppCorreoUcn {
                 linea = bf.readLine();
             }
         } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
         } catch (NullPointerException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            //System.out.println(e.getMessage());
         }
     }
 

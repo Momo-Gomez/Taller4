@@ -14,7 +14,7 @@ public class Cliente {
         this.nombre=nombre;
         this.apellido=apellido;
         paquetesRecibidos= new ListaPaquetes();
-        paquetesRecibidos= new ListaPaquetes();
+        paquetesEnviados= new ListaPaquetes();
     }
 
     public String getRut() {
