@@ -26,7 +26,6 @@ public class CorreoUcnImpl implements ICorreoUcn {
     public void ingresarCiudad(String nombreCiudad) {
         if (existeCiudad(nombreCiudad) == null) { // si no esta la ciudad (null) la crea y la agrega
             ciudades.add(new Ciudad(nombreCiudad));
-            System.out.println("ciudad ingresada");
         }
     }
 
@@ -38,7 +37,6 @@ public class CorreoUcnImpl implements ICorreoUcn {
                 Cliente c = new Cliente(rut, nombre, apellido);
                 ciudad.getClientes().add(c);// lo agrega a la lista particular de la ciudad
                 clientes.add(c);// lo agrega a la lista general de clientes
-                System.out.println("cliente ingresado");
             }
         }
     }
@@ -63,10 +61,10 @@ public class CorreoUcnImpl implements ICorreoUcn {
         do {
             if (tipo.equalsIgnoreCase("D") && current.getPaquete() instanceof PaquetePorDimension) {
                 PaquetePorDimension p = (PaquetePorDimension) current.getPaquete();
-                mensaje += "Codigo: " + p.getCodigo() + "Precio: " + p.obtenerValor() + "\n";
+                mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
             } else if (tipo.equalsIgnoreCase("P") && current.getPaquete() instanceof PaquetePorPeso) {
                 PaquetePorPeso p = (PaquetePorPeso) current.getPaquete();
-                mensaje += "Codigo: " + p.getCodigo() + "Precio: " + p.obtenerValor() + "\n";
+                mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
             }
             current = current.getNext();
         } while (current != listaPaquetes.getFirst());
@@ -91,7 +89,7 @@ public class CorreoUcnImpl implements ICorreoUcn {
             mensaje += ciudad.getNombreCiudad() + "\n";
             for (Cliente cliente : ciudad.getClientes()) {
                 mensaje += "Paquetes enviados: " + cliente.getPaquetesEnviados().getCantidad() + "\n";
-                mensaje += "Paquetes recibidos: " + cliente.getPaquetesRecibidos().getCantidad();
+                mensaje += "Paquetes recibidos: " + cliente.getPaquetesRecibidos().getCantidad()+ "\n";
             }
         }
         return mensaje;
@@ -99,7 +97,7 @@ public class CorreoUcnImpl implements ICorreoUcn {
 
     @Override
     public void actualizarClientes() {
-        // TODO Auto-generated method stub
+       
 
     }
 
@@ -141,25 +139,23 @@ public class CorreoUcnImpl implements ICorreoUcn {
             emisor.getPaquetesEnviados().insertarPrimer(p);// agrega el paquete en enviados del emisor
             receptor.getPaquetesRecibidos().insertarPrimer(p);// agrega el paquete a recibidos del receptor
             listaPaquetes.insertarPrimer(p);// lo agrega a la lista general de paquetes;
-            System.out.println(listaPaquetes.getFirst().getPaquete().getCodigo());
-        }
-
+       }
     }
 
     @Override
     public String obtenerDatosDeListasDePaquetes(ListaPaquetes paquetes) {
         String mensaje = "";
-        NodoPaquete current = listaPaquetes.getFirst();
+        NodoPaquete current = paquetes.getFirst();
         do {
             if (current.getPaquete() instanceof PaquetePorDimension) {
                 PaquetePorDimension p = (PaquetePorDimension) current.getPaquete();
-                mensaje += "Codigo: " + p.getCodigo() + "Precio: " + p.obtenerValor() + "\n";
+                mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
             } else if (current.getPaquete() instanceof PaquetePorPeso) {
                 PaquetePorPeso p = (PaquetePorPeso) current.getPaquete();
-                mensaje += "Codigo: " + p.getCodigo() + "Precio: " + p.obtenerValor() + "\n";
+                mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
             }
             current = current.getNext();
-        } while (current != listaPaquetes.getFirst());
+        } while (current != paquetes.getFirst());
         return mensaje;
     }
 

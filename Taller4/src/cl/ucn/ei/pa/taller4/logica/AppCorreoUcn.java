@@ -95,47 +95,50 @@ public class AppCorreoUcn {
 
     private static boolean menu(ICorreoUcn app) {
         boolean exite = false;
-        Scanner sc;
-        try {
-            sc = new Scanner(System.in);
-            System.out.print(
-                    "Bienvenido!\nIngrese una opcion\n(1)Realizar Envio\n(2)Reporte Envios\n(3)Salir\nSu opción: ");
-            switch (sc.nextLine()) {
-                case "1":
-                    realizarEnvio(app);
-                    break;
+        Scanner sc = new Scanner(System.in);
+        System.out
+                .print("Bienvenido!\nIngrese una opcion\n(1)Realizar Envio\n(2)Reporte Envios\n(3)Salir\nSu opción: ");
+        switch (sc.nextLine()) {
+            case "1":
+                realizarEnvio(app);
+                break;
 
-                case "2":
-                    reportesEnvios(app);
-                    break;
-                case "3":
-                    exite = true;
-                    break;
-                default:
-                    System.out.println("Opción no valida, ingrese valores numericos entre 1-2");
-                    break;
-            }
-        } catch (NullPointerException e) {
-            sc = new Scanner(System.in);
-            if (e.getMessage().equals("Emisor no existente")){ 
-                System.out.println("Ingrese la ciudad de residencia");
-                String nombreCiudad= sc.nextLine();
-                System.out.println("Ingrese su rut");
-                String rut=sc.nextLine();
-                System.out.println("Ingrese su nombre");
-                String nombre= sc.nextLine();
-                System.out.println("Ingrese su apellido");
-                String apellido= sc.nextLine();
-                app.ingresarCliente(rut, nombre, apellido, nombreCiudad);
-
-            }else{
-                System.out.println(e);
-            }
+            case "2":
+                reportesEnvios(app);
+                break;
+            case "3":
+                exite = true;
+                break;
+            default:
+                System.out.println("Opción no valida, ingrese valores numericos entre 1-2");
+                break;
         }
         return exite;
     }
 
     private static void reportesEnvios(ICorreoUcn app) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print(
+                "Ingrese una opcion para reportar\n(1)Envios por tipo\n(2)Envios por persona\n(3)Envios por ciudad\n(4)Volver atras\nSu opción: ");
+        switch (sc.nextLine()) {
+            case "1":
+                System.out.print("Envios por dimensiones\n"+app.obtenerEnviosPorTipo("D"));
+                System.out.print("Envios por peso\n"+app.obtenerEnviosPorTipo("P"));
+                break;
+            case "2":
+                System.out.print("Ingrese el rut de la persona a buscar: ");
+                String rut= sc.nextLine();
+                System.out.print(app.obtenerEnviosPorPersona(rut));
+                break;
+            case "3":
+             System.out.print(app.obtenerEnviosPorCiudad());
+                break;
+            case "4":
+                break;
+            default:
+                System.out.println("Opción no valida, ingrese valores numericos entre 1-4");
+                break;
+        }
     }
 
     private static void realizarEnvio(ICorreoUcn app) {
@@ -146,24 +149,80 @@ public class AppCorreoUcn {
             sc = new Scanner(System.in);
             System.out.print(
                     "Ingrese tipo de envio\n(1)Envio por Dimension\n(2)Envio por peso\n(3)Volver atras\nSu opción: ");
-                   switch (sc.nextLine()) {
+            switch (sc.nextLine()) {
                 case "1":
                     double largo;
                     double alto;
                     double ancho;
-                    System.out.print("Ingrese el rut del remitente");
-                    rutEmisor= sc.nextLine();
-                    System.out.print("Ingrese el rut del Destinatario");
-                    rutDestinatario= sc.nextLine();
-                    System.out.print("Ingrese el largo del paquete");
-                    largo=sc.nextInt();
-                    System.out.print("Ingrese el alto del paquete");
-                    alto =sc.nextInt();
-                    System.out.print("Ingrese el ancho del paquete");
-                    ancho=sc.nextInt();
-                    app.ingresarEnvioPorDimension(app.obtenerCodigo(), rutEmisor, rutDestinatario, largo, alto, ancho);
+                    System.out.print("Ingrese el rut del remitente: ");
+                    rutEmisor = sc.nextLine();
+                    System.out.print("Ingrese el rut del Destinatario: ");
+                    rutDestinatario = sc.nextLine();
+                    System.out.print("Ingrese el largo del paquete: ");
+                    largo = sc.nextInt();
+                    System.out.print("Ingrese el alto del paquete: ");
+                    alto = sc.nextInt();
+                    System.out.print("Ingrese el ancho del paquete: ");
+                    ancho = sc.nextInt();
+                    if (app.existeCliente(rutDestinatario) != null && app.existeCliente(rutEmisor) != null) {
+                        app.ingresarEnvioPorDimension(app.obtenerCodigo(), rutEmisor, rutDestinatario, largo, alto,
+                                ancho);
+                        System.out.println("Paquete ingresado exitosamente!");
+                    } else if (app.existeCliente(rutEmisor) == null && app.existeCliente(rutDestinatario) != null) {
+                        System.out.print(
+                                "Remitente no encontrado, por favor registre al remitente\nIngrese el nombre de la ciudad: ");
+                        String nombreCiudad = sc.nextLine();
+                        nombreCiudad = sc.nextLine();
+                        System.out.print("Ingrese su nombre: ");
+                        String nombre = sc.nextLine();
+                        System.out.print("Ingrese su apellido: ");
+                        String apellido = sc.nextLine();
+                        if (app.existeCiudad(nombreCiudad) != null) {
+                            app.ingresarCliente(rutEmisor, nombre, apellido, nombreCiudad);
+                            app.ingresarEnvioPorDimension(app.obtenerCodigo(), rutEmisor, rutDestinatario, largo, alto,
+                                    ancho);
+                            System.out.println("Paquete ingresado exitosamente!");
+                        } else {
+                            System.out.println("Cliente no ingresado, ciudad inexistente");
+                        }
+                    } else {
+                        System.out.println("Paquete no ingresado, destinatario inexistente");
+                    }
                     break;
                 case "2":
+                    double peso;
+                    System.out.print("Ingrese el rut del remitente: ");
+                    rutEmisor = sc.nextLine();
+                    System.out.print("Ingrese el rut del Destinatario: ");
+                    rutDestinatario = sc.nextLine();
+                    System.out.print("Ingrese el peso del paquete en kilogramos (max 20 kg): ");
+                    peso = sc.nextInt();
+                    if (app.existeCliente(rutDestinatario) != null && app.existeCliente(rutEmisor) != null
+                            && peso <= 20) {
+                        app.ingresarEnvioPorPeso(app.obtenerCodigo(), rutEmisor, rutDestinatario, peso);
+                        System.out.println("Paquete ingresado exitosamente!");
+                    } else if (app.existeCliente(rutEmisor) == null && app.existeCliente(rutDestinatario) != null) {
+                        System.out.print(
+                                "Remitente no encontrado, por favor registre al remitente\nIngrese el nombre de la ciudad: ");
+                        String nombreCiudad = sc.nextLine();
+                        nombreCiudad = sc.nextLine();
+                        System.out.print("Ingrese su nombre: ");
+                        String nombre = sc.nextLine();
+                        System.out.print("Ingrese su apellido: ");
+                        String apellido = sc.nextLine();
+                        if (app.existeCiudad(nombreCiudad) != null) {
+                            app.ingresarCliente(rutEmisor, nombre, apellido, nombreCiudad);
+                            app.ingresarEnvioPorPeso(app.obtenerCodigo(), rutEmisor, rutDestinatario, peso);
+                            System.out.println("Paquete ingresado exitosamente!");
+                        } else {
+                            System.out.println("Cliente no ingresado, ciudad inexistente");
+                        }
+                    } else if (app.existeCliente(rutDestinatario) != null && app.existeCliente(rutEmisor) != null
+                            && peso > 20) {
+                        System.out.println("Paquete no ingresado, peso excedido");
+                    } else {
+                        System.out.println("Paquete no ingresado, destinatario inexistente");
+                    }
                     break;
                 case "3":
                     break;
