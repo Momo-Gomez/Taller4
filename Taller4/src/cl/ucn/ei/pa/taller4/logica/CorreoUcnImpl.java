@@ -1,5 +1,8 @@
 package cl.ucn.ei.pa.taller4.logica;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,14 +16,12 @@ public class CorreoUcnImpl implements ICorreoUcn {
     private ListaPaquetes listaPaquetes;
     private LinkedList<Cliente> clientes;
     private ArrayList<Ciudad> ciudades;
-    
 
     public CorreoUcnImpl() {
         listaPaquetes = new ListaPaquetes();
         clientes = new LinkedList<Cliente>();
         ciudades = new ArrayList<Ciudad>();
     }
-
 
     @Override
     public void ingresarCiudad(String nombreCiudad) {
@@ -89,22 +90,58 @@ public class CorreoUcnImpl implements ICorreoUcn {
             mensaje += ciudad.getNombreCiudad() + "\n";
             for (Cliente cliente : ciudad.getClientes()) {
                 mensaje += "Paquetes enviados: " + cliente.getPaquetesEnviados().getCantidad() + "\n";
-                mensaje += "Paquetes recibidos: " + cliente.getPaquetesRecibidos().getCantidad()+ "\n";
+                mensaje += "Paquetes recibidos: " + cliente.getPaquetesRecibidos().getCantidad() + "\n";
             }
         }
         return mensaje;
     }
 
     @Override
-    public void actualizarClientes() {
-       
-
+    public void actualizarClientes() throws IOException {
+        FileWriter fw = new FileWriter("clientes.txt");
+        BufferedWriter bw = new BufferedWriter(fw);
+        for (Ciudad ciudad : ciudades) {
+            for (Cliente cliente : ciudad.getClientes()) {
+                bw.write(cliente.getRut() + "," + cliente.getNombre() + "," + cliente.getApellido() + ","
+                        + ciudad.getNombreCiudad() + "\n");
+            }
+        }
+        bw.close();
+        fw.close();
     }
 
     @Override
-    public void actualizarEnvios() {
-        // TODO Auto-generated method stub
+    public void actualizarEnvios () throws IOException {
+        FileWriter fw= new FileWriter("envios.txt");
+        BufferedWriter bw = new BufferedWriter(fw);
+        PaquetePorDimension d;
+        PaquetePorPeso p;
+        for (Cliente remitente:clientes){
+            NodoPaquete currentR= remitente.getPaquetesEnviados().getFirst();
+            if (currentR!=null){
+                do{
+                    for (Cliente destinatario: clientes ){
+                        NodoPaquete currentD= destinatario.getPaquetesRecibidos().getFirst();
+                        if (currentD!=null){
+                            do{
+                                if (currentR.getPaquete().getCodigo().equals(currentD.getPaquete().getCodigo()) && currentR.getPaquete() instanceof PaquetePorDimension ){
+                                    d= (PaquetePorDimension)currentR.getPaquete();
+                                    bw.write(d.getCodigo()+",D,"+remitente.getRut()+","+destinatario.getRut()+","+d.getLargo()+","+d.getAlto()+","+d.getAncho()+"\n");
+                                }else if(currentR.getPaquete().getCodigo().equals(currentD.getPaquete().getCodigo()) && currentR.getPaquete() instanceof PaquetePorPeso){
+                                    p= (PaquetePorPeso)currentR.getPaquete();
+                                    bw.write(p.getCodigo()+",P,"+remitente.getRut()+","+destinatario.getRut()+","+p.getPeso()+"\n");
+                                }
+                                currentD=currentD.getNext();
+                            }while(currentD!=destinatario.getPaquetesRecibidos().getFirst());
+                        }
+                    }
+                    currentR= currentR.getNext(); 
+                }while(currentR!= remitente.getPaquetesEnviados().getFirst());
+            }
 
+        }
+        bw.close();
+        fw.close();
     }
 
     @Override
@@ -139,31 +176,37 @@ public class CorreoUcnImpl implements ICorreoUcn {
             emisor.getPaquetesEnviados().insertarPrimer(p);// agrega el paquete en enviados del emisor
             receptor.getPaquetesRecibidos().insertarPrimer(p);// agrega el paquete a recibidos del receptor
             listaPaquetes.insertarPrimer(p);// lo agrega a la lista general de paquetes;
-       }
+        }
     }
 
     @Override
     public String obtenerDatosDeListasDePaquetes(ListaPaquetes paquetes) {
         String mensaje = "";
         NodoPaquete current = paquetes.getFirst();
-        do {
-            if (current.getPaquete() instanceof PaquetePorDimension) {
-                PaquetePorDimension p = (PaquetePorDimension) current.getPaquete();
-                mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
-            } else if (current.getPaquete() instanceof PaquetePorPeso) {
-                PaquetePorPeso p = (PaquetePorPeso) current.getPaquete();
-                mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
-            }
-            current = current.getNext();
-        } while (current != paquetes.getFirst());
+        if (current!= null){
+            do {
+                if (current.getPaquete() instanceof PaquetePorDimension) {
+                    PaquetePorDimension p = (PaquetePorDimension) current.getPaquete();
+                    mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
+                } else if (current.getPaquete() instanceof PaquetePorPeso) {
+                    PaquetePorPeso p = (PaquetePorPeso) current.getPaquete();
+                    mensaje += "Codigo: " + p.getCodigo() + "\tPrecio: " + p.obtenerValor() + "\n";
+                }
+                current = current.getNext();
+            } while (current != paquetes.getFirst());
+        }
         return mensaje;
     }
 
     @Override
     public String obtenerCodigo() {
-        String cod="";
-        cod+= (Integer.parseInt(listaPaquetes.getFirst().getPaquete().getCodigo())+1);
-        return cod ;
+        String cod = "";
+        if (listaPaquetes.getFirst()!=null){
+            cod += (Integer.parseInt(listaPaquetes.getFirst().getPaquete().getCodigo()) + 1);
+        }else{
+            cod+=1;
+        }
+        return cod;
     }
-    
+
 }

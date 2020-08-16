@@ -1,5 +1,7 @@
 package cl.ucn.ei.pa.taller4.logica;
 
+import java.io.IOException;
+
 import cl.ucn.ei.pa.taller4.dominio.Ciudad;
 import cl.ucn.ei.pa.taller4.dominio.Cliente;
 
@@ -19,9 +21,9 @@ public interface ICorreoUcn {
 
         public String obtenerEnviosPorCiudad();
 
-        public void actualizarClientes();
+        public void actualizarClientes() throws IOException;
 
-        public void actualizarEnvios();
+        public void actualizarEnvios() throws IOException;
 
         public Ciudad existeCiudad(String nombreCiudad);
 

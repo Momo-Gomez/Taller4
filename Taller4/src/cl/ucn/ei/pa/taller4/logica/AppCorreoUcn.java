@@ -236,9 +236,21 @@ public class AppCorreoUcn {
     }
 
     private static void actualizacionClientes(ICorreoUcn app) {
+        try {
+            app.actualizarClientes();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private static void actualizacionPaquetes(ICorreoUcn app) {
+        try {
+            app.actualizarEnvios();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
